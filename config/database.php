@@ -1,14 +1,19 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "db_kuliah";
 
-$conn = mysqli_connect($host, $username, $password, $database);
+class Database
+{
+    private string $host = "localhost";
+    private string $db = "db_kuliah";
+    private string $user = "root";
+    private string $pass = "";
 
-if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+    public function connect(): PDO
+    {
+        $dsn = "mysql:host={$this->host};dbname={$this->db};charset=utf8mb4";
+        
+        return new PDO($dsn, $this->user, $this->pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+    }
 }
-
-mysqli_set_charset($conn, "utf8mb4");
-?>

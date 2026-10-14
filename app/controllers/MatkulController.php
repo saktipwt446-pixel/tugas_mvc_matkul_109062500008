@@ -1,4 +1,3 @@
-```php
 <?php
 
 require_once __DIR__ . '/../models/Matkul.php';
@@ -6,41 +5,77 @@ require_once __DIR__ . '/../../config/database.php';
 
 class MatkulController
 {
-    private Matkul $model;
-
-    public function __construct(PDO $db)
-    {
-        $this->model = new Matkul($db);
-    }
+    public function __construct(private Matkul $model) {}
 
     // Menampilkan semua mata kuliah
-    public function index(): array
+    public function index(): void
     {
-        return $this->model->getAll();
+        $matakuliah = $this->model->getAll();
+        require_once __DIR__ . '/../views/matkul/index.php';
     }
 
-    // Menampilkan detail mata kuliah
-    public function show(string $kode): array|false
+    // Menampilkan form tambah mata kuliah
+    public function create(): void
     {
-        return $this->model->findById($kode);
+        require_once __DIR__ . '/../views/matkul/create.php';
     }
 
-    // Menambahkan mata kuliah
-    public function store(array $data): bool
+    // Menyimpan mata kuliah baru
+    public function store(): void
     {
-        return $this->model->create($data);
+        $data = $this->validateInput($_POST);
+        $this->model->create($data);
+        header('Location: index.php?page=matkul');
+        exit;
     }
 
-    // Mengubah mata kuliah
-    public function update(string $kode, array $data): bool
+    // Menampilkan form edit mata kuliah berdasarkan kode/id
+    public function edit(): void
     {
-        return $this->model->update($kode, $data);
+        $kode = $_GET['kode'] ?? '';
+        $matkul = $this->model->findById($kode);
+        
+        if (!$matkul) {
+            http_response_code(404);
+            exit('Data mata kuliah tidak ditemukan.');
+        }
+        
+        require_once __DIR__ . '/../views/matkul/edit.php';
+    }
+
+    // Mengubah data mata kuliah
+    public function update(): void
+    {
+        $kode = $_POST['kode'] ?? '';
+        $data = $this->validateInput($_POST);
+        $this->model->update($kode, $data);
+        header('Location: index.php?page=matkul');
+        exit;
     }
 
     // Menghapus mata kuliah
-    public function destroy(string $kode): bool
+    public function delete(): void
     {
-        return $this->model->delete($kode);
+        $kode = $_POST['kode'] ?? '';
+        $this->model->delete($kode);
+        header('Location: index.php?page=matkul');
+        exit;
+    }
+
+    // Validasi input sederhana sesuai pola modul
+    private function validateInput(array $input): array
+    {
+        $data = [
+            'kode' => trim($input['kode'] ?? ''),
+            'nama' => trim($input['nama'] ?? ''),
+            'sks'  => trim($input['sks'] ?? ''),
+            'smester' => trim($input['smester'] ?? '')
+        ];
+
+        if ($data['kode'] === '' || $data['nama'] === '' || $data['sks'] === '' || $data['smester'] === '') {
+            exit('Semua field wajib diisi.');
+        }
+
+        return $data;
     }
 }
-```
