@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../models/Matkul.php';
-require_once __DIR__ . '/../../config/database.php';
 
 class MatkulController
 {
@@ -29,7 +28,7 @@ class MatkulController
         exit;
     }
 
-    // Menampilkan form edit mata kuliah berdasarkan kode/id
+    // Menampilkan form edit mata kuliah berdasarkan kode
     public function edit(): void
     {
         $kode = $_GET['kode'] ?? '';
@@ -46,7 +45,7 @@ class MatkulController
     // Mengubah data mata kuliah
     public function update(): void
     {
-        $kode = $_POST['kode'] ?? '';
+        $kode = $_POST['kode_lama'] ?? $_POST['kode_matkul'] ?? '';
         $data = $this->validateInput($_POST);
         $this->model->update($kode, $data);
         header('Location: index.php?page=matkul');
@@ -56,24 +55,27 @@ class MatkulController
     // Menghapus mata kuliah
     public function delete(): void
     {
-        $kode = $_POST['kode'] ?? '';
+        $kode = $_POST['kode_matkul'] ?? '';
         $this->model->delete($kode);
         header('Location: index.php?page=matkul');
         exit;
     }
 
-    // Validasi input sederhana sesuai pola modul
+    // Validasi input disesuaikan dengan kolom di database
     private function validateInput(array $input): array
     {
         $data = [
-            'kode' => trim($input['kode'] ?? ''),
-            'nama' => trim($input['nama'] ?? ''),
-            'sks'  => trim($input['sks'] ?? ''),
-            'smester' => trim($input['smester'] ?? '')
+            'kode_matkul'    => trim($input['kode_matkul'] ?? ''),
+            'nama_matkul'    => trim($input['nama_matkul'] ?? ''),
+            'sks'            => trim($input['sks'] ?? ''),
+            'semester'       => trim($input['semester'] ?? ''),
+            'dosen_pengampu' => trim($input['dosen_pengampu'] ?? ''),
+            'program_studi'  => trim($input['program_studi'] ?? '')
         ];
 
-        if ($data['kode'] === '' || $data['nama'] === '' || $data['sks'] === '' || $data['smester'] === '') {
-            exit('Semua field wajib diisi.');
+        // Field utama yang wajib diisi (sesuai kolom database yang bertanda 'No' pada Null)
+        if ($data['kode_matkul'] === '' || $data['nama_matkul'] === '' || $data['sks'] === '' || $data['semester'] === '') {
+            exit('Kode, Nama Mata Kuliah, SKS, dan Semester wajib diisi.');
         }
 
         return $data;

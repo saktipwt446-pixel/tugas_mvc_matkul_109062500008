@@ -1,4 +1,4 @@
-Project MVC Data Mata Kuliah Wahyu
+# Project MVC Data Mata Kuliah Wahyu
 
 Aplikasi CRUD sederhana untuk mengelola data mata kuliah menggunakan PHP Native dengan pola Model-View-Controller (MVC).
 
@@ -34,3 +34,14 @@ Data mata kuliah terdiri dari kode mata kuliah, nama mata kuliah, SKS, semester,
 
 ## Histori Git
 Gunakan `git log --oneline --graph --decorate` untuk melihat tahapan pengembangan project.
+
+```text
+9726105 (HEAD -> main) changes for all files revisi
+cf05c66 docs: add installation and MVC documentation
+6d76572 feat: add complete CRUD routing
+8421e0c feat: add complete matkul CRUD views
+9437c9f feat: add complete Matkul CRUD controller
+ffd2734 feat: add complete Matkul CRUD model
+417f3b7 feat: add config seed data
+ae055be feat: add matakuliah database schema and seed data
+124dfc0 chore: initialize mvc php native project
